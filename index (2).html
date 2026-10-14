@@ -1,0 +1,847 @@
+<title>Haaning Bustur</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap">
+<style>
+/* Haaning-look: sort, hvid og rød. Flade flader, kraftig Hind Siliguri, firkant-mærke i baren. */
+:root{
+  --bg:#FFFFFF; --panel:#F3F3F2; --ink:#111111; --muted:#5C5C5C; --line:#D8D8D6;
+  --accent:#E3001B; --on-accent:#FFFFFF; --bar:#111111; --on-bar:#FFFFFF;
+  --ketchup:#E3001B; --mustard:#F2B705; --on-mustard:#1B1503; --green:#1E8E5A;
+  --sky:#E9E9E7; --ground:#B9B9B5; --ok-bg:#D8F0E2; --bad-bg:#F8D7DB; --ovl:rgba(255,255,255,.88);
+  --font:'Hind Siliguri','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111111; --panel:#1C1C1B; --ink:#F3F3F1; --muted:#A3A3A0; --line:#34342F;
+    --accent:#F0213A; --on-accent:#FFFFFF; --bar:#000000; --on-bar:#FFFFFF;
+    --ketchup:#F0213A; --mustard:#F2B705; --green:#3DBE86;
+    --sky:#242423; --ground:#3C3C39; --ok-bg:#16402C; --bad-bg:#4A1A21; --ovl:rgba(17,17,17,.88);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111111; --panel:#1C1C1B; --ink:#F3F3F1; --muted:#A3A3A0; --line:#34342F;
+  --accent:#F0213A; --on-accent:#FFFFFF; --bar:#000000; --on-bar:#FFFFFF;
+  --ketchup:#F0213A; --mustard:#F2B705; --green:#3DBE86;
+  --sky:#242423; --ground:#3C3C39; --ok-bg:#16402C; --bad-bg:#4A1A21; --ovl:rgba(17,17,17,.88);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.45 var(--font);margin:0}
+#bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bar);color:var(--on-bar);border-bottom:4px solid var(--accent)}
+.barin,.wrap{max-width:520px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.barin{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:9px;font:600 15px var(--font)}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.mark{display:grid;grid-template-columns:9px 9px;gap:2px;flex:none}
+.mark i{display:block;width:9px;height:9px;background:var(--accent)}
+.word{font:700 21px/1 var(--font);letter-spacing:-.01em}
+.who{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2;min-width:0;text-align:right}
+.who b{font-weight:700;max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who span{font-size:13px;opacity:.82}
+.who .off{color:#FF8A96;opacity:1;font-weight:700}
+.wrap{padding-block:22px 28px;display:flex;flex-direction:column;gap:16px}
+.label{font:600 14px var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:0}
+.sign{font:700 clamp(40px,13vw,66px)/.98 var(--font);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.sign.sm{font-size:clamp(30px,9vw,42px)}
+.sign::after{content:'';display:block;width:56px;height:6px;background:var(--accent);margin-top:12px}
+.lead{font-size:19px;margin:0}
+.place{font:600 18px var(--font);margin:0}
+.muted{color:var(--muted);margin:0}
+p{margin:0}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font:600 14px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+input[type=text],input[type=number]{font:500 19px var(--font);padding:12px 14px;border:2px solid var(--ink);border-radius:4px;background:var(--bg);color:var(--ink);width:100%;min-width:0}
+input.bad{border-color:var(--accent)}
+.btn{font:700 18px var(--font);background:var(--accent);color:var(--on-accent);border:2px solid var(--accent);border-radius:4px;padding:11px 22px;cursor:pointer;transition:transform .06s,opacity .1s}
+.btn:active{transform:translateY(2px)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.dark{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.big{font-size:30px;padding:18px 34px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.btn:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.panel{background:var(--panel);border-left:6px solid var(--accent);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.panel h2{font:700 24px/1.15 var(--font);margin:0}
+.bigcd{font:700 clamp(64px,22vw,110px)/1 var(--font);margin:0;text-align:center;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--panel);border:2px solid var(--line);padding:5px 12px;font-weight:600;border-radius:999px}
+.chip.me{border-color:var(--accent)}
+.chip.off{opacity:.45}
+
+.canvas-box{position:relative;width:100%;overflow:hidden;border:2px solid var(--ink);background:var(--sky)}
+.hud{display:flex;justify-content:space-between;gap:10px;font:600 16px var(--font);letter-spacing:.04em;text-transform:uppercase;padding-inline:2px}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:6px;background:var(--ovl);font:700 76px var(--font);text-align:center;padding:12px;cursor:pointer}
+.overlay.end{font:700 28px/1.15 var(--font)}
+.overlay.end span{font:600 15px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.charge{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
+.bat{position:relative;width:78%;height:54px;border:4px solid var(--ink);border-radius:6px;padding:4px}
+.bat::after{content:'';position:absolute;right:-12px;top:14px;width:8px;height:18px;background:var(--ink);border-radius:0 3px 3px 0}
+.bat i{display:block;height:100%;width:0;background:var(--green);border-radius:2px}
+.kwh{font:700 30px var(--font)}
+
+.qcard{background:var(--panel);padding:16px;display:flex;flex-direction:column;gap:12px}
+.qtext{font:700 21px/1.25 var(--font);text-wrap:balance}
+.timer{height:6px;background:var(--line);overflow:hidden}
+.timer i{display:block;height:100%;width:100%;background:var(--accent)}
+.opts{display:grid;gap:8px}
+.opt{font:600 17px var(--font);text-align:left;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:4px;padding:12px 14px;cursor:pointer}
+.opt:disabled{cursor:default;opacity:1;color:var(--ink)}
+.opt.right{background:var(--ok-bg);border-color:var(--green)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--accent)}
+.qnote{color:var(--muted);font-size:15px}
+.qres{font:700 19px var(--font);min-height:1.5em}
+.qres.ok{color:var(--green)}
+.qres.no{color:var(--accent)}
+.qslot{min-height:8px}
+
+.bigpts{font:700 76px/1 var(--font);margin:0;letter-spacing:-.03em}
+.bigpts small{font:600 18px var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:17px}
+.tbl th{font:600 14px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 0;border-bottom:2px solid var(--ink)}
+.tbl td{padding:8px 0;border-bottom:1px solid var(--line)}
+.tbl td:last-child,.tbl th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.board li{display:grid;grid-template-columns:2em 1fr auto auto;gap:10px;align-items:center;background:var(--panel);padding:8px 12px;border-left:6px solid var(--line)}
+.board li.me{border-left-color:var(--accent);font-weight:700}
+.board li.first{background:var(--ink);color:var(--bg);border-left-color:var(--accent)}
+.board li.off{opacity:.5}
+.board .pos{font:700 20px var(--font)}
+.board .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.board .st{font:600 12px var(--font);letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.board .pts{font-weight:700;font-variant-numeric:tabular-nums}
+.board .pts small{font-weight:500;opacity:.7;margin-left:4px}
+.board li.gap{background:none;border:0;padding:0;display:block;text-align:center;color:var(--muted);line-height:1}
+.winner{background:var(--ink);color:var(--bg);padding:18px 16px;border-left:6px solid var(--accent)}
+.winner small{display:block;font:600 14px var(--font);letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.winner b{display:block;font:700 40px/1.05 var(--font);letter-spacing:-.02em;overflow-wrap:anywhere}
+#live,#host{max-width:520px;margin-inline:auto;width:100%;padding:0 max(16px,env(safe-area-inset-left,0px)) 22px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:8px}
+#host{padding-bottom:36px}
+.hostbox{border:2px dashed var(--muted);padding:12px;display:flex;flex-direction:column;gap:10px}
+.hostbox .btn{font-size:16px;padding:9px 16px}
+.foot{font-size:14px;color:var(--muted)}
+.demo{background:var(--mustard);color:var(--on-mustard);font:600 14px var(--font);padding:7px 12px;text-align:center}
+@media (prefers-reduced-motion: reduce){.btn{transition:none}}
+</style>
+
+<div id="demoBar" class="demo" hidden>Forhåndsvisning: du er vært, og de andre spillere er computere. Til turen bruger I den rigtige version.</div>
+<header id="bar"><div class="barin">
+  <div class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="word">haaning</span></div>
+  <div class="who" id="who" hidden><b id="barName"></b><span id="barPts"></span></div>
+</div></header>
+<main id="stage" class="wrap"></main>
+<aside id="live" hidden></aside>
+<section id="host" hidden></section>
+
+<script>window.HAANING_DB_URL='https://haaning-bustur-default-rtdb.europe-west1.firebasedatabase.app';/* Indsæt Firebase-adressen mellem anførselstegnene, fx 'https://dit-projekt-default-rtdb.europe-west1.firebasedatabase.app' */</script>
+<script>
+(function(){
+'use strict';
+/* ---------- hjælpere ---------- */
+const $=(s,r)=>(r||document).querySelector(s);
+function h(tag,attrs){
+  const e=document.createElement(tag);
+  if(attrs){ for(const k in attrs){ const v=attrs[k];
+    if(k==='class') e.className=v;
+    else if(k==='text') e.textContent=v;
+    else if(v===true) e.setAttribute(k,'');
+    else if(v!==false&&v!=null) e.setAttribute(k,v);
+  } }
+  for(let i=2;i<arguments.length;i++){ const kids=[].concat(arguments[i]);
+    for(const kid of kids){ if(kid==null||kid===false) continue; e.append(kid.nodeType?kid:document.createTextNode(String(kid))); } }
+  return e;
+}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const fmt=n=>Number(n).toLocaleString('da-DK');
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function load(k,d){ try{ const s=localStorage.getItem(k); return s?JSON.parse(s):d; }catch(e){ return d; } }
+function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+function rr(g,x,y,w,hh,r){ r=Math.min(r,w/2,hh/2); g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+hh,r); g.arcTo(x+w,y+hh,x,y+hh,r); g.arcTo(x,y+hh,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+function loop(step){
+  let last=performance.now(),id=0,alive=true;
+  function f(t){ if(!alive) return; const dt=Math.min(0.05,(t-last)/1000); last=t; step(dt); if(alive) id=requestAnimationFrame(f); }
+  id=requestAnimationFrame(f);
+  return function(){ alive=false; cancelAnimationFrame(id); };
+}
+function mkCanvas(box,w,hh){
+  const c=h('canvas'); const dpr=Math.min(2,window.devicePixelRatio||1);
+  c.width=Math.round(w*dpr); c.height=Math.round(hh*dpr);
+  c.style.cssText='width:100%;height:100%;display:block;touch-action:none';
+  box.append(c); const g=c.getContext('2d'); g.scale(dpr,dpr); return {c:c,g:g};
+}
+function colors(){
+  const s=getComputedStyle(document.documentElement), v=n=>s.getPropertyValue(n).trim();
+  return {sky:v('--sky'),ground:v('--ground'),ink:v('--ink'),green:v('--green'),mustard:v('--mustard'),ketchup:v('--ketchup'),panel:v('--panel'),line:v('--line'),muted:v('--muted')};
+}
+function lx(c,e,W){ const r=c.getBoundingClientRect(); return (e.clientX-r.left)*W/r.width; }
+
+/* ---------- indhold ---------- */
+const ROUNDS=[
+ {id:'polse',title:'Pølsevognen',place:'Margueritten Grill i Aarhus og pølsevogne',
+  fact:'Haaning har igennem mange år bygget pølsevogne og grillpavilloner.',
+  game:'hop',gameName:'Hop med pølsen',
+  howto:'Pølsen løber af sig selv. Tryk på skærmen for at hoppe over sennep, løg og agurker. Du har tre liv og 25 sekunder.',
+  questions:[
+   {q:'Hvilket år rullede de første pølsevogne ud på Københavns gader?',o:['1901','1921','1946','1963'],a:1,n:'Seks vogne rullede ud i 1921. En pølse med brød kostede dengang 30 øre.'},
+   {q:'Hvilken by inspirerede de første danske pølsevogne?',o:['Berlin','Paris','New York','Rom'],a:0,n:'Pølsevogne var blevet populære i Berlin under første verdenskrig.'},
+   {q:'Hvad kalder københavnerne en "skaldet franskmand i sovepose"?',o:['En hotdog','En bagerbolle','En kop kaffe','En pariserbøf'],a:0,n:'Det er et gammelt kaldenavn for en pølse i brød.'}
+  ]},
+ {id:'tivoli',title:'Rutsjebanen',place:'Race mod alle i bussen',
+  fact:'Her kører I om kap. Hvert spørgsmål er en port på banen.',
+  game:'coaster',gameName:'Rutsjebane-race',
+  howto:'Vognen ruller af sig selv. Når den når en port, kommer et spørgsmål. Svar rigtigt og hurtigt for turbo. Svar forkert eller for langsomt, og vognen bremser. Hurtigste tid og flest rigtige svar giver flest point.',
+  questions:[
+   {q:'Hvilket år åbnede Tivoli i København?',o:['1743','1843','1903','1943'],a:1,n:'Tivoli åbnede i 1843.'},
+   {q:'Hvilken ø ligger Haaning på?',o:['Fyn','Samsø','Mors','Læsø'],a:2,n:'Haaning ligger i Vils på Mors.'},
+   {q:'Hvor mange medarbejdere har Haaning ifølge hjemmesiden?',o:['12','22','52','102'],a:1,n:'22 medarbejdere ifølge Haanings hjemmeside.'},
+   {q:'Hvornår kan Haanings historie dateres tilbage til?',o:['1913','1943','1973','1998'],a:1,n:'Haaning er en ejerledet dansk virksomhed med historie tilbage til 1943.'},
+   {q:'Hvilken virksomhed blev lagt sammen med Haaning i 2014?',o:['Morsø Specialinventar','Mors Møbler','Vils Træ','Limfjord Inventar'],a:0,n:'Sammenlægningen trådte i kraft 1. januar 2014.'}
+  ]},
+ {id:'biltema',title:'Biltema',place:'Odense, Hjørring, Thisted, Herning og Kalundborg',
+  fact:'Haaning har indrettet café- og loungeområderne, fra disk til sofaer.',
+  game:'cars',gameName:'Bil-banen',
+  howto:'Tryk på venstre halvdel af skærmen for at skifte bane til venstre, og på højre halvdel for at skifte til højre. Undgå de andre biler. Tre liv, 25 sekunder.',
+  questions:[
+   {q:'Hvad har Haaning leveret til Biltemas cafeer?',o:['Hele diskforløbet, produktionskøkken og loungemøbler','Kun skilte og flag','Kun parkeringspladsen','Kun indkøbsvogne'],a:0,n:'Også borde, stole, sofaer, akustikvægge og plantekasser.'},
+   {q:'Hvilket land kommer bilmærket Volvo fra?',o:['Tyskland','Sverige','Italien','Frankrig'],a:1,n:'Volvo er svensk.'},
+   {q:'Hvilken bil kom på samlebånd i 1908 og gjorde bilen almindelig?',o:['Ford Model T','VW Bobbel','Mini','Citroën 2CV'],a:0,n:'Ford Model T kom i 1908.'}
+  ]},
+ {id:'kvix',title:'Kvix',place:'Thisted',
+  fact:'Kiosk med drive-in og el-ladestandere. Ombygget forår 2022.',
+  game:'charge',gameName:'Ladestanderen',
+  howto:'Tryk på knappen så hurtigt du kan i 10 sekunder og fyld batteriet. Brug en finger eller to.',
+  questions:[
+   {q:'Hvor mange sandwich sælges over disken hos Kvix på en dag?',o:['40','150','400','1.400'],a:2,n:'Ca. 400 sandwich om dagen ifølge Haanings case.'},
+   {q:'Hvor ligger Kvix-kiosken med drive-in og el-ladestandere?',o:['Thisted','Skagen','Esbjerg','Rønne'],a:0,n:'Kvix ligger i Thisted.'},
+   {q:'Hvilket finér er brugt i Kvix-kioskens køkken og salgsområde?',o:['Egefiner','Teak','Fyr','Birk'],a:0,n:'Området er designet i egefiner.'}
+  ]},
+ {id:'bageri',title:'Sjørring Bageri',place:'Ombygget i 2017 og igen i 2021',
+  fact:'Efter første ombygning steg bageriets omsætning markant.',
+  game:'basket',gameName:'Brødkurven',
+  howto:'Træk med fingeren for at flytte kurven. Grib de lyse rundstykker. Undgå de brændte, de trækker et point fra. 20 sekunder.',
+  questions:[
+   {q:'Hvor længe holdt Sjørring Bageri lukket under ombygningen i 2021?',o:['Én dag','Tre dage','Én uge','Én måned'],a:2,n:'Bageriet var lukket én uge, mens alt blev bygget og monteret.'},
+   {q:'Hvornår var Sjørring Bageris første ombygning?',o:['2007','2012','2017','2020'],a:2,n:'Første ombygning var i 2017, den næste i 2021.'},
+   {q:'Hvad skete der med omsætningen efter den første ombygning?',o:['Den steg markant','Den faldt lidt','Den var uændret','Bageriet lukkede'],a:0,n:'Den stigende omsætning førte til endnu en ombygning i 2021.'}
+  ]},
+ {id:'cafe',title:'Shell Café og Emmerys',place:'Gørlev og København',
+  fact:'Shell Gørlev er den første butik i Danmark med det nye Shell Café-layout.',
+  game:'pour',gameName:'Hæld kaffen',
+  howto:'Kaffen stiger og falder i koppen. Tryk for at stoppe den ved den grønne streg. Fem kopper, og de bliver hurtigere.',
+  questions:[
+   {q:'Hvor ligger den første butik i Danmark med det nye Shell Café-layout?',o:['Gørlev','Skagen','Ribe','Hobro'],a:0,n:'Haaning leverede disk og kaffekoncept til Shell Gørlev.'},
+   {q:'Hvilken gade i København har en Emmerys, som Haaning har indrettet?',o:['Nyhavn','Købmagergade','Vesterbrogade','Amagerbrogade'],a:1,n:'Haaning har indrettet flere af Emmerys\' butikker.'},
+   {q:'Hvad har Haaning leveret til Shell gennem årene?',o:['Fra en enkelt disk til totalindretning','Kun benzin','Kun vinduesvaskere','Kun belysning'],a:0,n:'Opgaverne spænder fra en enkelt disk til totalindretninger.'}
+  ]},
+ {id:'pop',title:'Popquiz',place:'Alt muligt og ikke kun Haaning',finale:true,pop:true,limit:20,
+  fact:'Finalen er ti spørgsmål om alt muligt. Her kan hele stillingen ændre sig.',
+  game:'quiz',gameName:'Popquiz',
+  howto:'Ti spørgsmål om alt muligt fra dyr og lande til Lego. Du har 20 sekunder pr. spørgsmål. Hvert rigtigt svar giver 7 point, og hurtige svar giver op til 3 i bonus.',
+  questions:[
+   {q:'Hvor mange hjerter har en blæksprutte?',o:['1','2','3','8'],a:2,n:'Tre: to til gællerne og ét til resten af kroppen.'},
+   {q:'Hvad kommer navnet LEGO af?',o:['Det danske «leg godt»','Et latinsk ord for samle','Grundlæggerens hund','Et tysk ord for klods'],a:0,n:'Navnet er sammensat af de danske ord «leg godt».'},
+   {q:'Hvor mange knogler har et voksent menneske?',o:['106','206','306','406'],a:1,n:'Et voksent menneske har 206 knogler.'},
+   {q:'Hvilken farve har et flys «sorte kasse» i virkeligheden?',o:['Sort','Orange','Hvid','Blå'],a:1,n:'Den er knaldorange, så den er nem at finde efter et havari.'},
+   {q:'Hvilket landdyr har den længste drægtighed?',o:['Elefanten','Giraffen','Næsehornet','Hvalrossen'],a:0,n:'Elefanter går drægtige i omkring 22 måneder.'},
+   {q:'Hvilket grundstof har det kemiske symbol Au?',o:['Sølv','Guld','Aluminium','Jern'],a:1,n:'Au kommer af det latinske «aurum», som betyder guld.'},
+   {q:'Hvad hedder Danmarks længste å?',o:['Skjern Å','Storå','Gudenåen','Odense Å'],a:2,n:'Gudenåen er omkring 158 kilometer lang.'},
+   {q:'I hvilket land ligger verdens højeste vandfald, Angel Falls?',o:['Venezuela','Brasilien','Norge','Island'],a:0,n:'Angel Falls i Venezuela er knap 1.000 meter højt.'},
+   {q:'Hvad giver tallene på to modstående sider på en almindelig terning altid til sammen?',o:['6','7','8','9'],a:1,n:'Modstående sider giver altid 7: 1 og 6, 2 og 5, 3 og 4.'},
+   {q:'Hvilken farve har en flamingo, når den klækkes?',o:['Lyserød','Orange','Grålig eller hvid','Sort'],a:2,n:'De bliver først lyserøde af det, de spiser, som alger og rejer.'}
+  ]}
+];
+const DIM={hop:{w:360,h:220},cars:{w:360,h:260},basket:{w:360,h:260},pour:{w:360,h:200},charge:{w:360,h:220},coaster:{w:360,h:240}};
+const RANKS=[[0,'Kradser'],[120,'Ristet'],[240,'Fransk hotdog'],[360,'Med det hele'],[480,'Haaning-mester']];
+function rankOf(p){ let r=RANKS[0][1]; for(const x of RANKS){ if(p>=x[0]) r=x[1]; } return r; }
+
+/* ---------- net: delt tilstand for hele bussen ---------- */
+/* Live: Firebase Realtime Database over REST + EventSource (ingen SDK, intet login).
+   Demo: samme grænseflade i hukommelsen med computerspillere, så siden kan prøves uden database. */
+const DB_URL=String(window.HAANING_DB_URL||'').trim().replace(/\/+$/,'');
+const ROOM=String(window.HAANING_ROOM||'bus').replace(/[^a-z0-9_-]/gi,'')||'bus';
+const LIVE=!!DB_URL;
+const HOST=!LIVE||/vaert|host/i.test(location.hash);
+const INTRO_MS=LIVE?15000:9000;
+const STATE0={phase:'lobby',round:-1};
+function setPath(root,path,val){
+  const ks=String(path).split('/').filter(Boolean); let o=root;
+  for(let i=0;i<ks.length-1;i++){ if(o[ks[i]]==null||typeof o[ks[i]]!=='object') o[ks[i]]={}; o=o[ks[i]]; }
+  const k=ks[ks.length-1]; if(val===null||val===undefined) delete o[k]; else o[k]=val;
+}
+const clone=v=>v&&typeof v==='object'?JSON.parse(JSON.stringify(v)):v;
+let ME=load('hb-me',null);
+if(!ME||!ME.pid){ ME={pid:'p'+Math.random().toString(36).slice(2,10),name:''}; save('hb-me',ME); }
+
+const Net=(function(){
+  let tree={},subs=[],conn=!LIVE,loaded=!LIVE,offset=0,es=null,pend=null,bestRtt=1e9,queued=false;
+  const url=()=>DB_URL+'/rooms/'+ROOM+'.json';
+  function notify(){ if(queued) return; queued=true; setTimeout(()=>{ queued=false; subs.forEach(f=>{ try{f();}catch(e){ if(window.console) console.error(e); } }); },0); }
+  function localApply(obj){ for(const k in obj){ const v=obj[k]; if(v&&typeof v==='object'&&'.sv' in v) continue; setPath(tree,k,clone(v)); } }
+  function send(obj){ try{ fetch(url(),{method:'PATCH',body:JSON.stringify(obj),keepalive:true}).catch(()=>{}); }catch(e){} }
+  function afterRemote(){
+    if(pend){ const v=(tree.clock||{})[ME.pid]; if(v&&v!==pend.prev){ const t1=Date.now(),rtt=t1-pend.t0; if(rtt<bestRtt&&typeof v==='number'){ bestRtt=rtt; offset=v-(pend.t0+t1)/2; } pend=null; } }
+    notify();
+  }
+  function sync(){ pend={t0:Date.now(),prev:(tree.clock||{})[ME.pid]}; send({['clock/'+ME.pid]:{'.sv':'timestamp'}}); }
+  function open(){
+    es=new EventSource(url());
+    es.onopen=()=>{ conn=true; notify(); };
+    es.onerror=()=>{ conn=false; notify(); };
+    es.addEventListener('put',ev=>{ let d; try{ d=JSON.parse(ev.data); }catch(e){ return; }
+      if(d.path==='/'){ tree=d.data&&typeof d.data==='object'?d.data:{}; loaded=true; } else setPath(tree,d.path,d.data); afterRemote(); });
+    es.addEventListener('patch',ev=>{ let d; try{ d=JSON.parse(ev.data); }catch(e){ return; }
+      const base=d.path==='/'?'':d.path; for(const k in d.data) setPath(tree,base+'/'+k,d.data[k]); afterRemote(); });
+    sync(); setTimeout(sync,1200); setTimeout(sync,2600); setInterval(sync,60000);
+  }
+  return {
+    live:LIVE,
+    T(){ return {state:Object.assign({},STATE0,tree.state||{}),players:tree.players||{}}; },
+    now(){ return Date.now()+offset; },
+    connected(){ return conn; },
+    loaded(){ return loaded; },
+    on(fn){ subs.push(fn); },
+    patch(obj){ localApply(obj); if(LIVE) send(obj); notify(); },
+    start(){ if(LIVE) open(); else notify(); }
+  };
+})();
+
+/* computerspillere i demo-tilstand */
+function startBots(){
+  const names=['Ole','Henrik','Lise','Mette','Jens','Camilla','Søren'];
+  const bots=names.map((n,i)=>({id:'bot'+i,name:n,skill:0.45+Math.random()*0.5,plan:null}));
+  const rec=b=>({name:b.name,seen:Net.now(),done:-1,ready:-1});
+  bots.forEach(b=>Net.patch({['players/'+b.id]:rec(b)}));
+  let tick=0;
+  setInterval(()=>{
+    tick++; const T=Net.T(),st=T.state,now=Net.now(),upd={};
+    bots.forEach(b=>{
+      const me=T.players[b.id];
+      if(!me){ upd['players/'+b.id]=rec(b); b.plan=null; return; }
+      if(tick%5===0) upd['players/'+b.id+'/seen']=now;
+      if(st.phase!=='round') return;
+      const r=st.round;
+      if(!b.plan||b.plan.r!==r) b.plan={r:r,finish:st.startAt+(18+Math.random()*30)*1000,ready:null,half:false,done:me.done>=r};
+      const p=b.plan;
+      if(!p.done&&now>=p.finish){
+        const pts=Math.round(100*clamp(b.skill*(0.55+Math.random()*0.5),0.15,0.97)),g=Math.round(pts*0.55);
+        upd['players/'+b.id+'/rounds/s'+r]={p:pts,g:g,q:pts-g};
+        upd['players/'+b.id+'/done']=r; upd['players/'+b.id+'/live']=null;
+        p.done=true; p.ready=now+(2+Math.random()*6)*1000;
+      } else if(!p.done&&!p.half&&now>=(p.finish+st.startAt)/2){
+        p.half=true; upd['players/'+b.id+'/live']={r:r,p:Math.round(40*b.skill)};
+      }
+      if(p.done&&p.ready&&now>=p.ready&&(me.ready==null||me.ready<r)) upd['players/'+b.id+'/ready']=r;
+    });
+    if(Object.keys(upd).length) Net.patch(upd);
+  },1000);
+}
+
+/* ---------- tilstand ---------- */
+const stage=$('#stage'); let cleanup=null,screen='',playing=false,introRound=-1,resultsRound=-1,booted=false;
+const sumP=pl=>Object.keys(pl.rounds||{}).reduce((a,k)=>a+((pl.rounds[k]&&pl.rounds[k].p)||0),0);
+function rows(T){
+  const st=T.state,r=st.round;
+  return Object.keys(T.players).map(id=>{
+    const p=T.players[id]||{},base=sumP(p);
+    const lv=(st.phase==='round'&&p.live&&p.live.r===r&&(p.done==null||p.done<r))?(p.live.p||0):0;
+    let status=''; if(st.phase==='round'){ status=(p.done!=null&&p.done>=r)?((p.ready!=null&&p.ready>=r)?'klar':'færdig'):'spiller'; }
+    return {id:id,name:String(p.name||'?'),base:base,lv:lv,tot:base+lv,status:status,me:id===ME.pid,done:p.done==null?-1:p.done,ready:p.ready==null?-1:p.ready,
+      on:id===ME.pid||(Net.now()-(p.seen||0))<25000};
+  }).sort((a,b)=>b.tot-a.tot||a.name.localeCompare(b.name,'da'));
+}
+function boardEl(rs,limit){
+  const ol=h('ol',{class:'board'});
+  const line=(x,i)=>h('li',{class:(i===0&&x.tot>0?'first ':'')+(x.me?'me ':'')+(x.on?'':'off')},
+    h('span',{class:'pos',text:String(i+1)+'.'}),
+    h('span',{class:'nm',text:x.name+(x.me?' (dig)':'')}),
+    h('span',{class:'st',text:x.status}),
+    h('span',{class:'pts'},fmt(x.tot),x.lv?h('small',{text:'+'+x.lv+' live'}):null));
+  if(!rs.length){ ol.append(h('li',null,h('span'),h('span',{class:'muted',text:'Ingen spillere endnu.'}))); return ol; }
+  if(limit&&rs.length>limit){
+    rs.slice(0,limit).forEach((x,i)=>ol.append(line(x,i)));
+    const mi=rs.findIndex(x=>x.me);
+    if(mi>=limit){ ol.append(h('li',{class:'gap',text:'…'})); ol.append(line(rs[mi],mi)); }
+  } else rs.forEach((x,i)=>ol.append(line(x,i)));
+  return ol;
+}
+function show(name){
+  if(cleanup){ try{cleanup();}catch(e){} cleanup=null; }
+  screen=name;
+  const nodes=[].slice.call(arguments,1).reduce((a,b)=>a.concat(b),[]).filter(Boolean);
+  stage.replaceChildren.apply(stage,nodes); window.scrollTo(0,0);
+}
+function updateBar(){
+  const who=$('#who'); if(!ME.name){ who.hidden=true; return; } who.hidden=false;
+  const T=Net.T(),rs=rows(T),i=rs.findIndex(x=>x.me);
+  $('#barName').textContent=ME.name;
+  const sp=$('#barPts');
+  if(LIVE&&!Net.connected()){ sp.textContent='Ingen forbindelse'; sp.className='off'; }
+  else { sp.className=''; sp.textContent=i>=0?('Nr. '+(i+1)+' · '+fmt(rs[i].tot)+' point'):'0 point'; }
+}
+function renderLive(){
+  const box=$('#live');
+  if(!playing){ box.hidden=true; box.replaceChildren(); return; }
+  box.hidden=false; box.replaceChildren(h('p',{class:'label',text:'Stillingen lige nu'}),boardEl(rows(Net.T()),5));
+}
+function twoStep(btn,label,action){
+  const orig=btn.textContent; let armed=false,tm=0;
+  btn.addEventListener('click',()=>{ if(!armed){ armed=true; btn.textContent=label; tm=setTimeout(()=>{armed=false;btn.textContent=orig;},4000); } else { clearTimeout(tm); armed=false; btn.textContent=orig; action(); } });
+}
+function sendLive(r,p){ Net.patch({['players/'+ME.pid+'/live']:{r:r,p:p}}); }
+function registerMe(){
+  const T=Net.T(),ex=T.players[ME.pid];
+  if(ex){ Net.patch({['players/'+ME.pid+'/name']:ME.name,['players/'+ME.pid+'/seen']:Net.now()}); }
+  else Net.patch({['players/'+ME.pid]:{name:ME.name,seen:Net.now(),done:-1,ready:-1}});
+}
+
+function endOverlay(box,text,onGo){
+  const ov=h('div',{class:'overlay end'},h('strong',{text:text}),h('span',{text:'Tryk for at fortsætte'}));
+  box.append(ov); let armed=false; setTimeout(()=>{armed=true;},900);
+  ov.addEventListener('click',()=>{ if(armed) onGo(); });
+}
+/* ---------- spørgsmål ---------- */
+function questionCard(q,limit,cb){
+  const order=shuffle(q.o.map((t,i)=>({t:t,i:i})));
+  let done=false; const t0=performance.now();
+  const timer=h('div',{class:'timer'},h('i'));
+  const list=h('div',{class:'opts'});
+  const note=h('p',{class:'qnote',hidden:true});
+  const btns=order.map(o=>{ const b=h('button',{class:'opt',type:'button'},o.t); b.addEventListener('click',()=>pick(o.i,b)); return b; });
+  list.append.apply(list,btns);
+  const el=h('div',{class:'qcard'},h('p',{class:'qtext',text:q.q}),timer,list,note);
+  const rightBtn=()=>btns[order.findIndex(o=>o.i===q.a)];
+  function showNote(){ if(q.n){ note.textContent=q.n; note.hidden=false; } }
+  function pick(i,b){
+    if(done) return; done=true; clearInterval(iv);
+    const secs=(performance.now()-t0)/1000, ok=i===q.a;
+    b.classList.add(ok?'right':'wrong'); if(!ok) rightBtn().classList.add('right');
+    btns.forEach(x=>{x.disabled=true;}); showNote(); cb(ok,secs,false);
+  }
+  const iv=setInterval(()=>{
+    const f=Math.max(0,1-(performance.now()-t0)/1000/limit); timer.firstChild.style.width=(f*100)+'%';
+    if(f<=0&&!done){ done=true; clearInterval(iv); btns.forEach(x=>{x.disabled=true;}); rightBtn().classList.add('right'); showNote(); cb(false,limit,true); }
+  },100);
+  return {el:el,destroy:function(){ done=true; clearInterval(iv); }};
+}
+
+async function trivia(R,r,base){
+  const qs=R.questions,lim=R.limit||25,pb=R.pop?7:10,bb=R.pop?3:5; let points=0,correct=0,bonus=0;
+  for(let i=0;i<qs.length;i++){
+    await new Promise(resolve=>{
+      const res=h('p',{class:'qres'});
+      const next=h('button',{class:'btn',type:'button',hidden:true,text:i===qs.length-1?'Færdig':'Næste'}); next.addEventListener('click',resolve);
+      const card=questionCard(qs[i],lim,(ok,secs,to)=>{
+        let p=0; if(ok){ p=pb+Math.round(bb*clamp((lim*0.8-secs)/(lim*0.6),0,1)); correct++; bonus+=p-pb; }
+        points+=p; sendLive(r,base+points);
+        res.textContent=ok?'Rigtigt! +'+p+' point':(to?'Tiden løb ud. 0 point':'Forkert. 0 point'); res.className='qres '+(ok?'ok':'no'); next.hidden=false;
+      });
+      show('trivia',h('p',{class:'label',text:R.title+' · spørgsmål '+(i+1)+' af '+qs.length}),card.el,res,h('div',{class:'row'},next));
+      cleanup=()=>card.destroy();
+    });
+  }
+  return {points:points,correct:correct,total:qs.length,bonus:bonus};
+}
+
+/* ---------- minispil ---------- */
+const GAMES={};
+GAMES.hop=function(x){
+  const W=x.w,H=x.h,gy=176,cv=mkCanvas(x.box,W,H),c=cv.c,g=cv.g,col=colors();
+  const hot={x:54,y:gy,vy:0}; let obs=[],t=0,next=1,lives=3,cleared=0,inv=0;
+  const jump=()=>{ if(hot.y>=gy-0.5) hot.vy=-570; };
+  c.addEventListener('pointerdown',e=>{ e.preventDefault(); jump(); });
+  const onKey=e=>{ if(e.code==='Space'||e.code==='ArrowUp'){ e.preventDefault(); jump(); } };
+  window.addEventListener('keydown',onKey);
+  const stop=loop(dt=>{
+    t+=dt; const sp=150+Math.min(100,t*4);
+    hot.vy+=1500*dt; hot.y+=hot.vy*dt; if(hot.y>gy){ hot.y=gy; hot.vy=0; }
+    next-=dt;
+    if(next<=0){ const ks=[{w:16,h:36,k:'s'},{w:26,h:22,k:'l'},{w:14,h:28,k:'a'}], k=ks[Math.floor(Math.random()*3)];
+      obs.push({x:W+10,w:k.w,h:k.h,k:k.k,hit:false,done:false}); next=0.95+Math.random()*0.7-Math.min(0.2,t*0.01); }
+    inv=Math.max(0,inv-dt);
+    obs.forEach(o=>{
+      o.x-=sp*dt;
+      const hx=hot.x+5,hw=40,top=hot.y-26,bot=hot.y;
+      if(!o.hit&&inv<=0&&o.x<hx+hw&&o.x+o.w>hx&&(gy-o.h)<bot&&gy>top){ o.hit=true; lives--; inv=1; buzz(60); }
+      if(!o.done&&o.x+o.w<hot.x){ o.done=true; if(!o.hit) cleared++; }
+    });
+    obs=obs.filter(o=>o.x>-40);
+    g.fillStyle=col.sky; g.fillRect(0,0,W,H);
+    g.fillStyle=col.ground; g.fillRect(0,gy,W,H-gy);
+    g.fillStyle=col.line; const off=(t*sp)%32; for(let i=-1;i<W/32+1;i++) g.fillRect(i*32-off,gy+16,16,3);
+    obs.forEach(o=>{
+      if(o.k==='s'){ g.fillStyle=col.mustard; rr(g,o.x,gy-o.h+8,o.w,o.h-8,4); g.fill(); g.fillStyle=col.ketchup; rr(g,o.x+4,gy-o.h,o.w-8,10,3); g.fill(); }
+      else if(o.k==='l'){ g.strokeStyle=col.ink; g.lineWidth=5; g.beginPath(); g.ellipse(o.x+o.w/2,gy-o.h/2,o.w/2-2,o.h/2-2,0,0,Math.PI*2); g.stroke(); }
+      else { g.fillStyle=col.green; rr(g,o.x,gy-o.h,o.w,o.h,7); g.fill(); g.fillStyle=col.sky; g.fillRect(o.x+4,gy-o.h+8,2,2); g.fillRect(o.x+8,gy-o.h+16,2,2); }
+    });
+    if(inv<=0||Math.floor(t*14)%2===0){
+      const bx=hot.x,by=hot.y;
+      g.fillStyle='#D9A25A'; rr(g,bx,by-14,46,14,7); g.fill();
+      g.fillStyle='#B8372B'; rr(g,bx-3,by-23,52,11,5.5); g.fill();
+      g.strokeStyle='#E4A800'; g.lineWidth=2; g.beginPath(); for(let i=0;i<6;i++){ g.lineTo(bx+4+i*8,by-20+(i%2?3:-1)); } g.stroke();
+      g.fillStyle='#15221C'; g.beginPath(); g.arc(bx+38,by-8,2,0,Math.PI*2); g.fill();
+    }
+    x.L.textContent='Liv '+'●'.repeat(lives)+'○'.repeat(3-lives);
+    x.R.textContent='Tid '+Math.max(0,Math.ceil(25-t))+' s · Klaret '+cleared;
+    if(t>=25||lives<=0) x.finish(cleared/16,cleared+' forhindringer klaret');
+  });
+  x.setCleanup(()=>{ stop(); window.removeEventListener('keydown',onKey); });
+};
+GAMES.cars=function(x){
+  const W=x.w,H=x.h,cv=mkCanvas(x.box,W,H),c=cv.c,g=cv.g,col=colors();
+  const laneX=[87,180,273],py=H-62; let lane=1,px=laneX[1],obs=[],t=0,next=0.8,lives=3,passed=0,inv=0;
+  const pal=[col.ketchup,col.green,'#5B7C99','#8E9A94'];
+  const go=d=>{ lane=clamp(lane+d,0,2); };
+  c.addEventListener('pointerdown',e=>{ e.preventDefault(); go(lx(c,e,W)<W/2?-1:1); });
+  const onKey=e=>{ if(e.code==='ArrowLeft'){ e.preventDefault(); go(-1); } else if(e.code==='ArrowRight'){ e.preventDefault(); go(1); } };
+  window.addEventListener('keydown',onKey);
+  function car(cx,y,fill,player){
+    g.fillStyle=fill; rr(g,cx-15,y,30,52,7); g.fill(); g.strokeStyle=col.ink; g.lineWidth=2; g.stroke();
+    g.fillStyle=col.sky; rr(g,cx-10,y+12,20,12,3); g.fill(); rr(g,cx-10,y+32,20,9,3); g.fill();
+    g.fillStyle=col.ink; g.fillRect(cx-18,y+6,4,12); g.fillRect(cx+14,y+6,4,12); g.fillRect(cx-18,y+34,4,12); g.fillRect(cx+14,y+34,4,12);
+    if(player){ g.fillStyle=col.ink; g.fillRect(cx-2,y+2,4,48); }
+  }
+  const stop=loop(dt=>{
+    t+=dt; const sp=150+Math.min(100,t*4);
+    px+=(laneX[lane]-px)*Math.min(1,14*dt); inv=Math.max(0,inv-dt);
+    next-=dt; if(next<=0){ obs.push({lane:Math.floor(Math.random()*3),y:-60,c:pal[Math.floor(Math.random()*pal.length)],hit:false,done:false}); next=0.7+Math.random()*0.45-Math.min(0.2,t*0.01); }
+    obs.forEach(o=>{
+      o.y+=sp*dt;
+      if(!o.hit&&inv<=0&&o.lane===lane&&o.y+52>py&&o.y<py+52){ o.hit=true; lives--; inv=1; buzz(70); }
+      if(!o.done&&o.y>py+60){ o.done=true; if(!o.hit) passed++; }
+    });
+    obs=obs.filter(o=>o.y<H+70);
+    g.fillStyle=col.sky; g.fillRect(0,0,W,H);
+    g.fillStyle=col.ground; g.fillRect(40,0,280,H);
+    g.fillStyle=col.ink; g.fillRect(36,0,4,H); g.fillRect(320,0,4,H);
+    g.fillStyle=col.line; const off=(t*sp)%48; for(let i=-1;i<H/48+1;i++){ g.fillRect(133,i*48+off,4,24); g.fillRect(226,i*48+off,4,24); }
+    obs.forEach(o=>car(laneX[o.lane],o.y,o.c,false));
+    if(inv<=0||Math.floor(t*14)%2===0) car(px,py,col.mustard,true);
+    x.L.textContent='Liv '+'●'.repeat(lives)+'○'.repeat(3-lives);
+    x.R.textContent='Tid '+Math.max(0,Math.ceil(25-t))+' s · Undveget '+passed;
+    if(t>=25||lives<=0) x.finish(passed/20,passed+' biler undveget');
+  });
+  x.setCleanup(()=>{ stop(); window.removeEventListener('keydown',onKey); });
+};
+GAMES.basket=function(x){
+  const W=x.w,H=x.h,cv=mkCanvas(x.box,W,H),c=cv.c,g=cv.g,col=colors();
+  const bk={x:W/2,tx:W/2,w:70,y:H-34}; let items=[],t=0,next=0.4,score=0,flash=0;
+  const setT=e=>{ e.preventDefault(); bk.tx=clamp(lx(c,e,W),36,W-36); };
+  c.addEventListener('pointerdown',e=>{ try{c.setPointerCapture(e.pointerId);}catch(_){} setT(e); });
+  c.addEventListener('pointermove',setT);
+  const stop=loop(dt=>{
+    t+=dt; bk.x+=(bk.tx-bk.x)*Math.min(1,16*dt); flash=Math.max(0,flash-dt);
+    next-=dt; if(next<=0){ items.push({x:20+Math.random()*(W-40),y:-20,vy:105+Math.random()*55+t*2,good:Math.random()<0.72,dead:false}); next=0.5+Math.random()*0.2; }
+    items.forEach(it=>{
+      it.y+=it.vy*dt;
+      if(!it.dead&&it.y>bk.y-14&&it.y<bk.y+10&&Math.abs(it.x-bk.x)<bk.w/2+6){ it.dead=true; if(it.good){ score++; } else { score=Math.max(0,score-1); flash=0.25; buzz(50); } }
+    });
+    items=items.filter(it=>!it.dead&&it.y<H+24);
+    g.fillStyle=col.sky; g.fillRect(0,0,W,H);
+    g.fillStyle=col.ground; g.fillRect(0,H-12,W,12);
+    items.forEach(it=>{
+      g.fillStyle=it.good?'#E3B572':'#3A2A22'; g.beginPath(); g.ellipse(it.x,it.y,15,10,0,0,Math.PI*2); g.fill();
+      g.strokeStyle=col.ink; g.lineWidth=2; g.stroke();
+      g.strokeStyle=it.good?'#F4DDB4':'#7C6A5E'; g.lineWidth=2; g.beginPath(); g.moveTo(it.x-6,it.y-2); g.lineTo(it.x+2,it.y-5); g.stroke();
+    });
+    g.fillStyle=flash>0?col.ketchup:col.mustard; g.beginPath(); g.moveTo(bk.x-bk.w/2,bk.y-12); g.lineTo(bk.x+bk.w/2,bk.y-12); g.lineTo(bk.x+bk.w/2-8,bk.y+16); g.lineTo(bk.x-bk.w/2+8,bk.y+16); g.closePath(); g.fill();
+    g.strokeStyle=col.ink; g.lineWidth=3; g.stroke();
+    g.lineWidth=1.5; for(let i=-2;i<=2;i++){ g.beginPath(); g.moveTo(bk.x+i*13,bk.y-10); g.lineTo(bk.x+i*11,bk.y+14); g.stroke(); }
+    x.L.textContent='Tid '+Math.max(0,Math.ceil(20-t))+' s';
+    x.R.textContent='Rundstykker '+score;
+    if(t>=20) x.finish(score/18,score+' rundstykker i kurven');
+  });
+  x.setCleanup(stop);
+};
+GAMES.pour=function(x){
+  const W=x.w,H=x.h,cv=mkCanvas(x.box,W,H),c=cv.c,g=cv.g,col=colors(),N=5;
+  let attempt=0,u=0,dir=1,speed=0.85,center=0.5,hw=0.075,state='run',pause=0,msg='',scores=[],runT=0;
+  function newRound(){ speed=0.65+attempt*0.2; center=0.25+Math.random()*0.5; hw=0.075-attempt*0.006; u=Math.random()<0.5?0:1; dir=u===0?1:-1; state='run'; msg=''; runT=0; }
+  function tap(){
+    if(state!=='run') return;
+    const err=Math.abs(u-center), sc=err<=hw?1:Math.max(0,1-(err-hw)/0.3);
+    scores.push(sc); msg=sc>=1?'Perfekt!':sc>0.6?'Tæt på':sc>0.25?'Lidt ved siden af':'Forbi'; state='pause'; pause=0.9; buzz(30);
+  }
+  c.addEventListener('pointerdown',e=>{ e.preventDefault(); tap(); });
+  const onKey=e=>{ if(e.code==='Space'){ e.preventDefault(); tap(); } };
+  window.addEventListener('keydown',onKey);
+  newRound();
+  const avg=()=>scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:0;
+  const stop=loop(dt=>{
+    if(state==='run'){ u+=dir*speed*dt; if(u>=1){ u=1; dir=-1; } if(u<=0){ u=0; dir=1; } runT+=dt; if(runT>8){ scores.push(0); msg='For langsomt'; state='pause'; pause=0.9; } }
+    else { pause-=dt; if(pause<=0){ attempt++; if(attempt>=N){ x.finish(avg(),'Gennemsnit '+Math.round(avg()*100)+' % af perfekt'); return; } newRound(); } }
+    const cx=W/2,top=48,bot=168,cw=92,ch=bot-top;
+    g.fillStyle=col.sky; g.fillRect(0,0,W,H);
+    g.fillStyle=col.ground; g.fillRect(0,H-12,W,12);
+    g.fillStyle=col.ink; g.fillRect(cx-6,8,12,30); g.fillRect(cx-18,8,36,8);
+    g.fillStyle='#5A3A26'; g.fillRect(cx-cw/2+4,bot-u*(ch-8),cw-8,u*(ch-8));
+    g.strokeStyle=col.ink; g.lineWidth=5; g.lineJoin='round'; g.beginPath(); g.moveTo(cx-cw/2,top); g.lineTo(cx-cw/2+8,bot); g.lineTo(cx+cw/2-8,bot); g.lineTo(cx+cw/2,top); g.stroke();
+    g.beginPath(); g.arc(cx+cw/2+8,top+ch/2-4,16,-Math.PI/2,Math.PI/2); g.stroke();
+    const ty0=bot-(center+hw)*(ch-8), ty1=bot-(center-hw)*(ch-8);
+    g.fillStyle=col.green; g.globalAlpha=0.55; g.fillRect(cx-cw/2-22,ty0,cw+44,ty1-ty0); g.globalAlpha=1;
+    g.fillStyle=col.green; g.fillRect(cx-cw/2-22,(ty0+ty1)/2-1.5,cw+44,3);
+    g.fillStyle=col.ink; g.font='700 18px sans-serif'; g.textAlign='center'; g.fillText(msg,cx,H-22);
+    x.L.textContent='Kop '+Math.min(attempt+1,N)+' af '+N;
+    x.R.textContent='Snit '+Math.round(avg()*100)+' %';
+  });
+  x.setCleanup(()=>{ stop(); window.removeEventListener('keydown',onKey); });
+};
+GAMES.charge=function(x){
+  const bat=h('div',{class:'bat'},h('i')), lab=h('div',{class:'kwh',text:'0,0 kWh'});
+  const btn=h('button',{class:'btn big',type:'button',text:'TRYK!'});
+  x.box.append(h('div',{class:'charge'},bat,lab,btn));
+  const DUR=10,TARGET=65; let t=0,taps=0;
+  function hit(){ taps++; bat.firstChild.style.width=Math.min(100,taps/TARGET*100)+'%'; lab.textContent=(taps*0.35).toFixed(1).replace('.',',')+' kWh'; }
+  btn.addEventListener('pointerdown',e=>{ e.preventDefault(); hit(); });
+  btn.addEventListener('click',e=>{ if(e.detail===0) hit(); });
+  const stop=loop(dt=>{
+    t+=dt; x.L.textContent='Tid '+Math.max(0,Math.ceil(DUR-t))+' s'; x.R.textContent='Tryk '+taps;
+    if(t>=DUR) x.finish(taps/TARGET,taps+' tryk på 10 sekunder');
+  });
+  x.setCleanup(stop);
+};
+
+function runMinigame(R){
+  const d=DIM[R.game],L=h('span'),Rr=h('span'),hud=h('div',{class:'hud'},L,Rr);
+  const box=h('div',{class:'canvas-box'}); box.style.aspectRatio=d.w+' / '+d.h;
+  show('game',h('p',{class:'label',text:R.title+' · '+R.gameName}),box,hud);
+  return new Promise(resolve=>{
+    let finished=false;
+    GAMES[R.game]({box:box,L:L,R:Rr,w:d.w,h:d.h,setCleanup:fn=>{ cleanup=fn; },
+      finish:(frac,text)=>{ if(finished) return; finished=true; if(cleanup){ try{cleanup();}catch(e){} cleanup=null; }
+        endOverlay(box,text,()=>resolve({frac:clamp(frac,0,1),text:text})); }});
+  });
+}
+
+/* ---------- rutsjebane-race ---------- */
+function coasterRace(R,r){
+  const W=360,H=240,QS=R.questions,GU=[0.14,0.31,0.48,0.64,0.8];
+  const box=h('div',{class:'canvas-box'}); box.style.aspectRatio=W+' / '+H;
+  const L=h('span'),Rr=h('span'),hud=h('div',{class:'hud'},L,Rr),panel=h('div',{class:'qslot'});
+  show('game',h('p',{class:'label',text:R.title+' · '+R.gameName}),box,hud,panel);
+  return new Promise(resolve=>{
+    const cv=mkCanvas(box,W,H),g=cv.g,col=colors();
+    let p=0,t=0,boost=0,brake=0,qi=0,active=false,activeCard=null,correct=0,results=[],hideTimer=0,finished=false;
+    const ty=u=>148-50*Math.sin(u*Math.PI*2.6+0.4)+13*Math.sin(u*Math.PI*9);
+    const tx=u=>18+u*(W-36);
+    function open(i){
+      active=true;
+      activeCard=questionCard(QS[i],20,(ok)=>{
+        results[i]=ok; if(ok){ correct++; boost=t+5; brake=0; } else { brake=t+3.5; boost=0; }
+        sendLive(r,correct*8);
+        active=false; clearTimeout(hideTimer); hideTimer=setTimeout(()=>{ if(!active) panel.replaceChildren(); },1800);
+      });
+      clearTimeout(hideTimer); panel.replaceChildren(activeCard.el);
+    }
+    function draw(){
+      g.fillStyle=col.sky; g.fillRect(0,0,W,H);
+      g.fillStyle=col.ground; g.fillRect(0,H-12,W,12);
+      g.strokeStyle=col.line; g.lineWidth=2;
+      for(let u=0.02;u<1;u+=0.04){ g.beginPath(); g.moveTo(tx(u),ty(u)); g.lineTo(tx(u),H-12); g.stroke(); }
+      g.lineJoin='round'; g.lineCap='round'; g.beginPath();
+      for(let i=0;i<=120;i++){ const u=i/120; if(i) g.lineTo(tx(u),ty(u)); else g.moveTo(tx(u),ty(u)); }
+      g.strokeStyle=col.ink; g.lineWidth=7; g.stroke(); g.strokeStyle=col.mustard; g.lineWidth=3; g.stroke();
+      GU.forEach((u,i)=>{
+        const x0=tx(u),y0=ty(u),st=results[i];
+        g.strokeStyle=col.ink; g.lineWidth=2; g.beginPath(); g.moveTo(x0,y0); g.lineTo(x0,y0-30); g.stroke();
+        g.fillStyle=st===true?col.green:st===false?col.ketchup:col.panel; rr(g,x0-9,y0-42,18,14,3); g.fill(); g.strokeStyle=col.ink; g.lineWidth=2; g.stroke();
+        g.fillStyle=st===undefined?col.ink:'#FFFFFF'; g.font='700 11px sans-serif'; g.textAlign='center'; g.fillText(String(i+1),x0,y0-31);
+      });
+      const u=clamp(p/1000,0,1),x1=tx(u),y1=ty(u),ang=Math.atan2(ty(Math.min(1,u+0.004))-ty(Math.max(0,u-0.004)),tx(Math.min(1,u+0.004))-tx(Math.max(0,u-0.004)));
+      g.save(); g.translate(x1,y1-8); g.rotate(ang);
+      if(t<boost){ g.fillStyle=col.mustard; for(let k=0;k<3;k++){ g.beginPath(); g.moveTo(-15,-6+k*5); g.lineTo(-30-Math.random()*8,-3+k*5); g.lineTo(-15,-1+k*5); g.closePath(); g.fill(); } }
+      g.fillStyle=col.ketchup; rr(g,-15,-10,30,13,4); g.fill(); g.strokeStyle=col.ink; g.lineWidth=2; g.stroke();
+      g.fillStyle=col.mustard; g.beginPath(); g.arc(-6,-14,4,0,Math.PI*2); g.fill(); g.beginPath(); g.arc(5,-14,4,0,Math.PI*2); g.fill();
+      g.fillStyle=col.ink; g.beginPath(); g.arc(-9,5,3.5,0,Math.PI*2); g.fill(); g.beginPath(); g.arc(9,5,3.5,0,Math.PI*2); g.fill();
+      g.restore();
+      g.fillStyle=col.ink; g.font='700 16px sans-serif'; g.textAlign='left';
+      if(t<brake) g.fillText('BREMSE',10,22); else if(t<boost) g.fillText('TURBO',10,22);
+    }
+    function finishRace(){
+      if(finished) return; finished=true; stop(); clearTimeout(hideTimer);
+      if(active&&activeCard) activeCard.destroy();
+      panel.replaceChildren(); draw();
+      const T=t,timeP=clamp(60*(52-T)/26,0,60),corrP=correct*8;
+      const res={points:Math.round(timeP+corrP),game:Math.round(timeP),quiz:corrP,gmax:60,qmax:40,glabel:'Banetid',qlabel:'Rigtige svar',
+        text:'Mål efter '+T.toFixed(1).replace('.',',')+' s med '+correct+' af '+QS.length+' rigtige.',correct:correct,total:QS.length};
+      endOverlay(box,'Mål! '+T.toFixed(1).replace('.',',')+' s',()=>resolve(res));
+    }
+    const stop=loop(dt=>{
+      t+=dt; const sp=t<brake?10:t<boost?58:28; p+=sp*dt;
+      if(!active&&qi<GU.length&&p/1000>=GU[qi]){ open(qi); qi++; }
+      draw();
+      L.textContent='Tid '+t.toFixed(1).replace('.',',')+' s'; Rr.textContent='Rigtige '+correct+' / '+QS.length;
+      if(p>=1000) finishRace();
+    });
+    cleanup=()=>{ stop(); clearTimeout(hideTimer); if(activeCard) activeCard.destroy(); };
+  });
+}
+
+/* ---------- flow ---------- */
+function submit(r,res){
+  const T=Net.T(),me=T.players[ME.pid]||{},upd={};
+  if(!(me.rounds&&me.rounds['s'+r])) upd['players/'+ME.pid+'/rounds/s'+r]={p:res.points,g:res.game,q:res.quiz,gm:res.gmax,qm:res.qmax,gl:res.glabel,ql:res.qlabel,x:res.text};
+  upd['players/'+ME.pid+'/done']=Math.max(me.done==null?-1:me.done,r);
+  upd['players/'+ME.pid+'/live']=null;
+  Net.patch(upd);
+}
+async function startPlay(r){
+  if(playing) return; playing=true; renderLive();
+  const R=ROUNDS[r]; let res;
+  try{
+    if(R.game==='coaster'){ res=await coasterRace(R,r); }
+    else if(R.game==='quiz'){
+      const q=await trivia(R,r,0),base=q.correct*7;
+      res={points:q.points,game:base,quiz:q.bonus,gmax:70,qmax:30,glabel:'Rigtige svar (7 point hver)',qlabel:'Hurtighedsbonus',text:q.correct+' af '+q.total+' rigtige svar.'};
+    }
+    else {
+      const g=await runMinigame(R),gp=Math.round(55*g.frac); sendLive(r,gp);
+      const q=await trivia(R,r,gp);
+      res={points:gp+q.points,game:gp,quiz:q.points,gmax:55,qmax:45,glabel:'Minispil',qlabel:'Spørgsmål',text:g.text+'. '+q.correct+' af '+q.total+' rigtige svar.'};
+    }
+  }catch(e){ if(window.console) console.error(e); res={points:0,game:0,quiz:0,gmax:55,qmax:45,glabel:'Minispil',qlabel:'Spørgsmål',text:'Noget gik galt på denne station.'}; }
+  submit(r,res); playing=false; renderLive(); onChange();
+}
+
+function joinScreen(){
+  const input=h('input',{id:'nameInput',type:'text',maxlength:'20',placeholder:'Dit navn',autocomplete:'off',value:ME.name||''});
+  const go=h('button',{class:'btn',type:'button',text:'Hop ombord'});
+  go.addEventListener('click',()=>{
+    const n=input.value.trim(); if(!n){ input.classList.add('bad'); input.focus(); return; }
+    ME.name=n; save('hb-me',ME); registerMe(); onChange();
+  });
+  input.addEventListener('keydown',e=>{ if(e.key==='Enter') go.click(); });
+  show('join',
+    h('p',{class:'label',text:'Bustur · Haaning A/S'}),
+    h('h1',{class:'sign',text:'Haaning Bustur'}),
+    h('p',{class:'lead',text:'Seks stationer fra Haanings egne projekter og en popquiz til sidst. Hele bussen spiller samtidigt, og stillingen opdateres live.'}),
+    h('div',{class:'field'},h('label',{for:'nameInput',text:'Navn'}),input),
+    h('div',{class:'row'},go),
+    h('p',{class:'foot',text:'Du skal ikke logge ind. Skriv dit navn, og vent på, at værten starter første station.'}));
+}
+function connectingScreen(msg){ show('connect',h('p',{class:'label',text:'Haaning Bustur'}),h('h2',{class:'sign sm',text:msg||'Forbinder'}),h('p',{class:'muted',text:'Et øjeblik.'})); }
+
+function lobbyScreen(){
+  show('lobby',h('p',{class:'label',text:'Ombord'}),h('h2',{class:'sign sm',text:'Venter på afgang'}),
+    h('p',{class:'lead',text:'Værten starter første station, når alle er med.'}),
+    h('div',{id:'lobbyList',class:'chips'}),
+    h('p',{class:'foot',text:'Alle spiller samme station samtidigt. Mellem stationerne kan du se stillingen, og næste station starter, når alle er klar.'}));
+  refreshLobby();
+}
+function refreshLobby(){
+  const L=$('#lobbyList'); if(!L) return; const rs=rows(Net.T());
+  L.replaceChildren.apply(L,rs.map(x=>h('span',{class:'chip'+(x.me?' me':'')+(x.on?'':' off'),text:x.name})));
+}
+
+function introScreen(r){
+  introRound=r; const R=ROUNDS[r],cd=h('p',{class:'bigcd'}); let iv=0;
+  show('intro',h('p',{class:'label',text:R.finale?'Finale':'Station '+(r+1)+' af '+ROUNDS.length}),h('h2',{class:'sign sm',text:R.title}),h('p',{class:'place',text:R.place}),h('p',{text:R.fact}),
+    h('div',{class:'panel'},h('p',{class:'label',text:R.gameName}),h('p',{text:R.howto})),
+    cd,h('p',{class:'foot',text:'Alle starter samtidigt. Hold telefonen klar.'}));
+  const tick=()=>{ const ms=Net.T().state.startAt-Net.now(),s=Math.ceil(ms/1000); cd.textContent=s>0?String(s):'Kør!'; if(ms<=0){ clearInterval(iv); onChange(); } };
+  iv=setInterval(tick,150); cleanup=()=>clearInterval(iv); tick();
+}
+
+function resultsScreen(r){
+  resultsRound=r; const R=ROUNDS[r],T=Net.T(),me=(T.players[ME.pid]||{}).rounds||{},res=me['s'+r]||{p:0,g:0,q:0,gl:'Minispil',ql:'Spørgsmål',gm:55,qm:45,x:''};
+  const last=r>=ROUNDS.length-1;
+  const rdy=h('button',{id:'rdyBtn',class:'btn',type:'button',text:last?'Klar til slutresultatet':'Klar til næste station'});
+  rdy.addEventListener('click',()=>{ Net.patch({['players/'+ME.pid+'/ready']:r}); refreshResults(); });
+  show('results',h('p',{class:'label',text:R.finale?'Finalen er færdig':'Station '+(r+1)+' færdig'}),h('h2',{class:'sign sm',text:R.title}),
+    h('p',{class:'bigpts'},String(res.p),h('small',{text:'/ 100 point'})),
+    h('table',{class:'tbl'},h('thead',null,h('tr',null,h('th',{text:'Del'}),h('th',{text:'Point'}))),
+      h('tbody',null,
+        h('tr',null,h('td',{text:(res.gl||'Minispil')+' (maks. '+(res.gm||55)+')'}),h('td',{text:String(res.g||0)})),
+        h('tr',null,h('td',{text:(res.ql||'Spørgsmål')+' (maks. '+(res.qm||45)+')'}),h('td',{text:String(res.q||0)})))),
+    h('p',{class:'muted',text:res.x||''}),
+    h('p',{class:'label',text:'Stillingen'}),h('div',{id:'resBoard'}),
+    h('p',{id:'resWait',class:'muted'}),
+    h('div',{class:'row'},rdy));
+  refreshResults();
+}
+function refreshResults(){
+  const B=$('#resBoard'); if(!B) return; const T=Net.T(),r=resultsRound,rs=rows(T),on=rs.filter(x=>x.on);
+  B.replaceChildren(boardEl(rs,0));
+  const notDone=on.filter(x=>x.done<r),notReady=on.filter(x=>x.ready<r),me=rs.find(x=>x.me),btn=$('#rdyBtn'),w=$('#resWait');
+  const rdy=me&&me.ready>=r; if(btn){ btn.disabled=!!rdy; btn.textContent=rdy?'Du er klar':(r>=ROUNDS.length-1?'Klar til slutresultatet':'Klar til næste station'); }
+  if(notDone.length) w.textContent='Venter på at '+notDone.map(x=>x.name).join(', ')+' bliver færdig'+(notDone.length>1?'e':'')+'.';
+  else if(notReady.length) w.textContent='Alle er færdige. Klar: '+(on.length-notReady.length)+' af '+on.length+'.';
+  else w.textContent='Alle er klar.';
+}
+
+function finalScreen(){
+  const T=Net.T(),rs=rows(T),w=rs[0],mi=rs.findIndex(x=>x.me);
+  show('final',h('p',{class:'label',text:'Slutresultat'}),h('h2',{class:'sign sm',text:'Hele ruten er kørt'}),
+    w?h('div',{class:'winner'},h('small',{text:'Vinder'}),h('b',{text:w.name}),h('span',{text:fmt(w.tot)+' point'})):null,
+    mi>=0?h('p',{class:'lead',text:'Din placering: nr. '+(mi+1)+' af '+rs.length+' med '+fmt(rs[mi].tot)+' point.'}):null,
+    h('div',{id:'finBoard'}),
+    h('p',{class:'muted',text:'Vinderen henter præmien hos værten.'}));
+  refreshFinal();
+}
+function refreshFinal(){ const B=$('#finBoard'); if(B) B.replaceChildren(boardEl(rows(Net.T()),0)); }
+
+/* ---------- vært ---------- */
+let hostUI=null;
+function hostAdvance(){
+  const st=Net.T().state,next=(st.phase==='lobby'?-1:st.round)+1;
+  if(next>=ROUNDS.length) Net.patch({state:{phase:'final',round:st.round}});
+  else Net.patch({state:{phase:'round',round:next,startAt:Net.now()+INTRO_MS}});
+}
+function buildHost(){
+  if(!HOST) return; const box=$('#host'); box.hidden=false;
+  const info=h('p',{class:'muted'});
+  const start=h('button',{class:'btn',type:'button',text:'Start station 1'}); start.addEventListener('click',hostAdvance);
+  const next=h('button',{class:'btn dark',type:'button',text:'Videre nu'}); next.addEventListener('click',hostAdvance);
+  const reset=h('button',{class:'btn ghost',type:'button',text:'Nulstil spillet'});
+  twoStep(reset,'Tryk igen for at nulstille alt',()=>{ Net.patch({state:{phase:'lobby',round:-1},players:null}); });
+  box.replaceChildren(h('div',{class:'hostbox'},h('p',{class:'label',text:'Vært'}),info,h('div',{class:'row'},start,next,reset),
+    h('p',{class:'foot',text:'Næste station starter af sig selv, når alle er færdige og klar. «Videre nu» springer dem over, der hænger. Hold denne side åben under turen.'})));
+  hostUI={info:info,start:start,next:next};
+  setInterval(hostTick,1000);
+}
+function hostTick(){
+  const T=Net.T(),st=T.state; if(st.phase!=='round'||Net.now()<st.startAt) return;
+  const on=rows(T).filter(x=>x.on);
+  if(on.length&&on.every(x=>x.done>=st.round&&x.ready>=st.round)) hostAdvance();
+}
+function renderHost(){
+  if(!hostUI) return; const T=Net.T(),st=T.state,rs=rows(T),on=rs.filter(x=>x.on);
+  if(st.phase==='lobby'){ hostUI.info.textContent=on.length+' spillere ombord.'; hostUI.start.hidden=false; hostUI.next.hidden=true; }
+  else if(st.phase==='round'){
+    const d=on.filter(x=>x.done>=st.round).length,k=on.filter(x=>x.ready>=st.round).length;
+    hostUI.info.textContent='Station '+(st.round+1)+' af '+ROUNDS.length+' · færdige '+d+'/'+on.length+' · klar '+k+'/'+on.length+'.';
+    hostUI.start.hidden=true; hostUI.next.hidden=false; hostUI.next.textContent=st.round>=ROUNDS.length-1?'Vis slutresultat nu':'Videre nu';
+  } else { hostUI.info.textContent='Spillet er slut.'; hostUI.start.hidden=true; hostUI.next.hidden=true; }
+}
+
+/* ---------- styring af skærme ---------- */
+function onChange(){
+  if(!booted) return;
+  updateBar(); renderHost(); if(playing) renderLive();
+  if(!Net.loaded()){ if(screen!=='connect') connectingScreen(); return; }
+  if(!ME.name){ if(screen!=='join') joinScreen(); return; }
+  const T=Net.T(),st=T.state;
+  if(!T.players[ME.pid]) registerMe();
+  if(playing) return;
+  if(st.phase==='lobby'){ if(screen!=='lobby') lobbyScreen(); else refreshLobby(); }
+  else if(st.phase==='round'){
+    const r=st.round,me=T.players[ME.pid]||{};
+    if(me.done!=null&&me.done>=r){ if(screen!=='results'||resultsRound!==r) resultsScreen(r); else refreshResults(); }
+    else if(Net.now()<st.startAt){ if(screen!=='intro'||introRound!==r) introScreen(r); }
+    else startPlay(r);
+  }
+  else if(st.phase==='final'){ if(screen!=='final') finalScreen(); else refreshFinal(); }
+}
+
+Net.on(onChange);
+booted=true;
+if(!LIVE){ $('#demoBar').hidden=false; startBots(); }
+buildHost();
+setInterval(()=>{ if(ME.name&&Net.loaded()) Net.patch({['players/'+ME.pid+'/seen']:Net.now()}); },8000);
+Net.start();
+if(!ME.name&&(Net.loaded())) joinScreen(); else connectingScreen();
+setTimeout(()=>{ if(!Net.loaded()&&screen==='connect') connectingScreen('Ingen forbindelse til spillet'); },9000);
+onChange();
+})();
+</script>
